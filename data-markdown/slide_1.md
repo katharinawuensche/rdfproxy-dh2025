@@ -2,64 +2,116 @@
 
 Lukas Plank & Katharina Wünsche
 
-Austrian Centre for Digital Humanities <!-- .element: class="font-size-75" -->
+<span class="font-size-75">
+Austrian Centre for Digital Humanities<br> 
+Austrian Academy of Sciences
+</span>
 
 +++
 
-## Goals
-- Point 1 <!-- .element: class="fragment" -->
-- Point 2 <!-- .element: class="fragment" -->
-- Point 3 <!-- .element: class="fragment" -->
+## Motivation
+How to build a REST API on top of a SPARQL endpoint? <!-- .element: class="fragment" data-fragment-index="1" -->
 
 +++
 
-#### Code 1
-```python
-class ttl:
-    def __init__(
-        self,
-        uri: _TripleSubject,
-        *predicate_object_pairs: tuple[
-            URIRef,
-            _TripleObject
-            | list
-            | Iterator
-            | Self
-            | str
-            | tuple[_TripleObject | str, ...],
-        ],
-        graph: Graph | None = None,
-    ) -> None:
-        self.uri = uri
-        self.predicate_object_pairs = predicate_object_pairs
-        self.graph = Graph() if graph is None else deepcopy(graph)
-        self._iter = iter(self)
-		# ...
+<div class="flex">
+<div>
+SPARQL results are returned as flat rows
+
+| Author      | Work    | 
+| ----------- | ------- |
+| Shakespeare | Hamlet  |
+| Shakespeare | Othello |
+| Shakespeare | King Lear |
+| Goethe      | Faust   |
+<!-- .element: class="font-size-75 mx-25" -->
+
+</div>
+<div class="fragment bl-1">
+API consumers usually expect nested JSON
+
+```json
+{
+   "authors":[
+      {
+         "name":"Shakespeare",
+         "work":[
+            "Hamlet",
+            "Othello",
+            "King Lear"
+         ]
+      },
+      {
+         "name":"Goethe",
+         "work":[
+            "Faust"
+         ]
+      }
+   ]
+}
 ```
+</div>
 
 +++
 
-#### Code 2
-```python
-	# class ttl
-    def __iter__(self) -> Iterator[_Triple]:
-        """Generate an iterator of tuple-based triple representations."""
-        for pred, obj in self.predicate_object_pairs:
-            match obj:
-                case ttl():
-                    yield (self.uri, pred, obj.uri)
-                    yield from obj
-                case list() | Iterator():
-                    _b = BNode()
-                    yield (self.uri, pred, _b)
-                    yield from ttl(_b, *obj)
-                case tuple():
-                    _object_list = zip(repeat(pred), obj)
-                    yield from ttl(self.uri, *_object_list)
-                case obj if isinstance(obj, _TripleObject):
-                    yield (self.uri, pred, obj)
-                case str():
-                    yield (self.uri, pred, Literal(obj))
-                case _:
-                    raise Exception("This should never happen.")
-```
+### What pure SPARQL endpoints cannot offer
+<ul class="fragmented-list">
+<li class="fragment">Grouping of results <br><span class="font-size-75">supporting nested structures (e.g. authors and their work)<span> </li>
+<li class="fragment">Entity-aware pagination <br><span class="font-size-75">returning the requested number of <b>entities</b>, not just rows<span> </li>
+<li class="fragment">Documentation standards <br><span class="font-size-75">providing an OpenAPI Description of endpoints and schemas<span> </li>
+</ul>
+
++++
+
+<table class="font-size-75">
+  <thead>
+    <tr>
+      <th>Tool</th>
+      <th>Grouping</th>
+      <th>Pagination</th>
+      <th>OpenAPI specification</th>
+      <th>Reusable SPARQL queries</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Ramose [5]</td>
+      <td class="fragment" data-fragment-index="1">Partial</td>
+      <td class="fragment" data-fragment-index="1">❌</td>
+      <td class="fragment" data-fragment-index="1">❌</td>
+      <td class="fragment" data-fragment-index="1">✅</td>
+    </tr>
+    <tr>
+      <td>Basil [4]</td>
+      <td class="fragment" data-fragment-index="1">Partial</td>
+      <td class="fragment" data-fragment-index="1">❌</td>
+      <td class="fragment" data-fragment-index="1">✅</td>
+      <td class="fragment" data-fragment-index="1">✅</td>
+    </tr>
+    <tr>
+      <td>Schröder et al. [11]</td>
+      <td class="fragment" data-fragment-index="1">✅</td>
+      <td class="fragment" data-fragment-index="1">❌</td>
+      <td class="fragment" data-fragment-index="1">❌</td>
+      <td class="fragment" data-fragment-index="1">❌</td>
+    </tr>
+    <tr>
+      <td>Grlc [7]</td>
+      <td class="fragment" data-fragment-index="1">❌</td>
+      <td class="fragment" data-fragment-index="1">❌</td>
+      <td class="fragment" data-fragment-index="1">✅</td>
+      <td class="fragment" data-fragment-index="1">✅</td>
+    </tr>
+    <tr>
+      <td>SPARQL Transformer [6]</td>
+      <td class="fragment" data-fragment-index="1">✅</td>
+      <td class="fragment" data-fragment-index="1">✅</td>
+      <td class="fragment" data-fragment-index="1">❌</td>
+      <td class="fragment" data-fragment-index="1">❌</td>
+    </tr>
+  </tbody>
+</table>
+
++++
+
+**The solution: RDFProxy**
