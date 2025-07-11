@@ -9,6 +9,7 @@ RDFProxy Summary
   <ul style="font-size: 0.8em;">
 	<li class="fragment">Documentation</li>
 	<li class="fragment">Parser-based solution for dynamic query modification</li>
+	<li class="fragment">Asynchronous interface</li>
 	<li class="fragment">Interfacing with declarative modeling languages (LinkML/SHACL extension)</li>
   </ul>
   </li>
