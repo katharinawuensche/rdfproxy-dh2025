@@ -1,11 +1,12 @@
 **Pydantic Crash Course**
 
-Pydantic is a data modeling and validation library based on Python's type annotation system
+<div class="fragment">Pydantic is a data modeling and validation library based on Python's type annotation system</div>
 
+<br/>
 <ul style="font-size: 0.7em;">
-  <li>Standard Python classes and class-level attributes as modelling language</li>
-  <li>Handles parsing, validation and serialization of data</li>
-  <li>Features a Rust core for high-performance operations over models</li>
+  <li class="fragment">Standard Python classes and class-level attributes as modelling language</li>
+  <li class="fragment">Handles parsing, validation and serialization of data</li>
+  <li class="fragment">Features a Rust core for high-performance operations over models</li>
 </ul>
 
 
