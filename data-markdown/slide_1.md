@@ -112,6 +112,9 @@ API consumers usually expect nested JSON
   </tbody>
 </table>
 
+
 +++
 
-**The solution: RDFProxy**
+<p><strong>Our solution: RDFProxy</strong></p>
+
+<p class="fragment">A Python library for running SPARQL queries <br/>and mapping SPARQL result sets to Pydantic models.</p>
