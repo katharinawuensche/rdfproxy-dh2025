@@ -1,11 +1,11 @@
-**RDFProxy: A Model-Centric Approach to Transforming SPARQL Result Sets for Linked Data Clients** <!-- .element: class="font-size-125" -->
+**RDFProxy: A Model-Centric Approach to Transforming SPARQL Result Sets for Linked Data Clients** <!-- .element: class="font-size-125" style="margin-bottom: 1.5em" -->
 
-Lukas Plank & Katharina Wünsche
+Lukas Plank & Katharina Wünsche <!-- .element style="margin: 1em 0 0.5em;" -->
 
-<span class="font-size-75">
+<div class="font-size-75">
 Austrian Centre for Digital Humanities<br> 
 Austrian Academy of Sciences
-</span>
+</div>
 
 +++
 
